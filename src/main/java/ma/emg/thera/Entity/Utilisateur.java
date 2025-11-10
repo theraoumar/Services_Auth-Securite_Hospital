@@ -22,6 +22,7 @@ public class Utilisateur {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
+
     // Relation avec la table roles (clé étrangère id_role)
     @ManyToOne
     @JoinColumn(name = "id_role", referencedColumnName = "id_role")
