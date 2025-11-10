@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Inscription</title>
+    <style>
+        body { font-family: Arial; max-width: 400px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
+        .form-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .error { color: red; margin-bottom: 15px; }
+        .success { color: green; margin-bottom: 15px; }
+        .link { text-align: center; margin-top: 15px; }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1>Créer un compte</h1>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${success}" class="success" th:text="${success}"></div>
+
+    <form th:action="@{/perform_register}" method="post">
+        <div class="form-group">
+            <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+        </div>
+        <div class="form-group">
+            <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" placeholder="Mot de passe" required>
+        </div>
+        <div class="form-group">
+            <input type="password" name="confirmPassword" placeholder="Confirmer le mot de passe" required>
+        </div>
+        <div class="form-group">
+            <input type="hidden" name="roleId" th:value="${roleId}" />
+        </div>
+        <button type="submit">Créer le compte</button>
+    </form>
+
+    <div class="link">
+        <a th:href="@{/login}">Déjà un compte ? Se connecter</a>
+    </div>
+</div>
+</body>
+</html>
