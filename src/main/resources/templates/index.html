@@ -1,10 +1,571 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Hôpital - Accueil</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hôpital Saint-Vincent - Système de Gestion</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #34495e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 40px 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .hospital-name {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .hospital-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features Grid */
+        .features {
+            padding: 60px 0;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+
+        /* Login Section */
+        .login-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .login-card h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 40px;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-lg {
+            padding: 18px 50px;
+            font-size: 1.2rem;
+        }
+
+        /* Role Selection */
+        .role-selection {
+            margin: 40px 0;
+        }
+
+        .role-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .role-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .role-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        .copyright {
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+        /* Emergency Banner */
+        .emergency-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            padding: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 300;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hospital-name {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+
+            .btn-lg {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+
+            .stats {
+                gap: 30px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+    </style>
 </head>
 <body>
-<h1>Bienvenue dans le système de gestion d’hôpital</h1>
-<a href="/login">Se connecter</a>
+<!-- Emergency Banner -->
+<div class="emergency-banner">
+    <i class="fas fa-exclamation-triangle"></i>
+    En cas d'urgence médicale, composez le <strong>15</strong> immédiatement
+</div>
+
+<!-- Header -->
+<header class="header">
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-hospital"></i>
+        </div>
+        <h1 class="hospital-name">Hôpital Saint-Vincent</h1>
+        <p class="hospital-subtitle">Centre Hospitalier Universitaire - Excellence & Innovation</p>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1 class="animate-fade-in">Système de Gestion Hospitalière</h1>
+        <p class="animate-fade-in delay-1">
+            Une plateforme intégrée pour une gestion optimale des soins,
+            des patients et du personnel médical.
+        </p>
+
+        <!-- Statistics -->
+        <div class="stats animate-fade-in delay-2">
+            <div class="stat-item">
+                <span class="stat-number">250+</span>
+                <span class="stat-label">Médecins</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Infirmiers</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">50k+</span>
+                <span class="stat-label">Patients/an</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Services</span>
+            </div>
+        </div>
+
+        <div class="animate-fade-in delay-3">
+            <a href="/login" class="btn btn-lg">
+                <i class="fas fa-sign-in-alt"></i>
+                Accéder à la Plateforme
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px; font-weight: 300;">
+            Une Plateforme Complète
+        </h2>
+        <p style="text-align: center; font-size: 1.2rem; opacity: 0.9; max-width: 800px; margin: 0 auto 50px;">
+            Découvrez les fonctionnalités conçues pour optimiser la gestion hospitalière
+            et améliorer la qualité des soins.
+        </p>
+
+        <div class="features-grid">
+            <div class="feature-card animate-fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Espace Médecin</h3>
+                <p>
+                    Gestion des consultations, ordonnances, dossiers patients
+                    et planning médical en temps réel.
+                </p>
+            </div>
+
+            <div class="feature-card animate-fade-in delay-1">
+                <div class="feature-icon">
+                    <i class="fas fa-user-nurse"></i>
+                </div>
+                <h3>Espace Infirmier</h3>
+                <p>
+                    Planification des soins, administration des traitements
+                    et surveillance des patients.
+                </p>
+            </div>
+
+            <div class="feature-card animate-fade-in delay-2">
+                <div class="feature-icon">
+                    <i class="fas fa-user-injured"></i>
+                </div>
+                <h3>Espace Patient</h3>
+                <p>
+                    Prise de rendez-vous, consultation des résultats
+                    et gestion du dossier médical personnel.
+                </p>
+            </div>
+
+            <div class="feature-card animate-fade-in delay-3">
+                <div class="feature-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>Administration</h3>
+                <p>
+                    Gestion centralisée des utilisateurs, des ressources
+                    et de la configuration du système.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Login Section -->
+<section class="login-section">
+    <div class="container">
+        <div class="login-card">
+            <h2>Connexion à la Plateforme</h2>
+            <p style="margin-bottom: 30px; opacity: 0.8;">
+                Accédez à votre espace personnel sécurisé
+            </p>
+
+            <a href="/login" class="btn btn-lg">
+                <i class="fas fa-lock"></i>
+                Se Connecter
+            </a>
+
+            <div class="role-selection">
+                <p style="margin-bottom: 15px; opacity: 0.8;">Accès démonstration :</p>
+                <div class="role-buttons">
+                    <a href="/login?demo=admin" class="role-btn">
+                        <i class="fas fa-cog"></i> Administrateur
+                    </a>
+                    <a href="/login?demo=medecin" class="role-btn">
+                        <i class="fas fa-user-md"></i> Médecin
+                    </a>
+                    <a href="/login?demo=infirmier" class="role-btn">
+                        <i class="fas fa-user-nurse"></i> Infirmier
+                    </a>
+                    <a href="/login?demo=patient" class="role-btn">
+                        <i class="fas fa-user-injured"></i> Patient
+                    </a>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2);">
+                <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 15px;">
+                    Première utilisation ?
+                </p>
+                <a href="/register" class="btn btn-outline">
+                    <i class="fas fa-user-plus"></i>
+                    Créer un Compte Patient
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <a href="/about" class="footer-link">À Propos</a>
+            <a href="/contact" class="footer-link">Contact</a>
+            <a href="/privacy" class="footer-link">Confidentialité</a>
+            <a href="/help" class="footer-link">Aide</a>
+            <a href="/emergency" class="footer-link">Urgences</a>
+        </div>
+        <div class="copyright">
+            &copy; 2024 Hôpital Saint-Vincent - Tous droits réservés.
+            Système certifié HAS (Haute Autorité de Santé)
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Animation au défilement
+    document.addEventListener('DOMContentLoaded', function() {
+        const animatedElements = document.querySelectorAll('.animate-fade-in');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        animatedElements.forEach(element => {
+            element.style.animationPlayState = 'paused';
+            observer.observe(element);
+        });
+
+        // Effet de parallaxe sur la hero section
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+    });
+
+    // Simulation de compteurs
+    function animateCounter(element, target, duration = 2000) {
+        let start = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+                element.textContent = target + '+';
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(start) + '+';
+            }
+        }, 16);
+    }
+
+    // Démarrer les compteurs quand la section devient visible
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const stats = entry.target.querySelectorAll('.stat-number');
+                animateCounter(stats[0], 250);
+                animateCounter(stats[1], 500);
+                animateCounter(stats[2], 50);
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    });
+
+    const heroSection = document.querySelector('.hero');
+    statsObserver.observe(heroSection);
+</script>
 </body>
 </html>

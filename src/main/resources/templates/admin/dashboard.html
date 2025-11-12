@@ -1,30 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/header :: head">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
         .container { max-width: 1200px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .alert { padding: 10px; margin-bottom: 20px; border-radius: 4px; }
-        .alert-success { background: #d4edda; color: #155724; }
-        .alert-error { background: #f8d7da; color: #721c24; }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; padding: 20px; background: white; border-radius: 10px; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #f1f1f1; }
         .form-group { margin-bottom: 15px; }
-        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
         button { padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
         button.delete { background: #dc3545; }
-        button.update { background: #28a745; }
-        .actions { display: flex; gap: 8px; }
+        .alert { padding: 10px; margin-bottom: 20px; border-radius: 4px; }
+        .alert-success { background: #d4edda; color: #155724; }
     </style>
 </head>
-<div th:replace="fragments/header :: nav"></div>
 <body>
+<!-- Navigation simplifiée -->
+<div style="background: #2c3e50; padding: 15px; color: white; margin-bottom: 20px; border-radius: 8px;">
+    <a href="/admin/dashboard" style="color: white; text-decoration: none; font-weight: bold;">Dashboard Admin</a>
+    <a href="/logout" style="color: white; text-decoration: none; float: right;">Déconnexion</a>
+</div>
+
 <div class="container">
     <div class="header">
         <h1>🔐 Dashboard Administration</h1>
@@ -32,23 +34,22 @@
     </div>
 
     <!-- Messages -->
-    <div th:if="${param.deleted}" class="alert alert-success">Utilisateur supprimé avec succès.</div>
-    <div th:if="${param.updated}" class="alert alert-success">Rôle mis à jour avec succès.</div>
-    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+    <div th:if="${param.deleted}" class="alert alert-success">
+        Utilisateur supprimé avec succès.
+    </div>
 
     <!-- Formulaire de création -->
     <div class="card">
         <h2>➕ Ajouter un utilisateur</h2>
         <form th:action="@{/admin/users}" method="post">
             <div class="form-group">
-                <input type="text" name="username" placeholder="Nom d'utilisateur" required />
+                <input type="text" name="username" placeholder="Nom d'utilisateur" required>
             </div>
             <div class="form-group">
-                <input type="email" name="email" placeholder="Email" required />
+                <input type="email" name="email" placeholder="Email" required>
             </div>
             <div class="form-group">
-                <input type="password" name="password" placeholder="Mot de passe" required />
+                <input type="password" name="password" placeholder="Mot de passe" required>
             </div>
             <div class="form-group">
                 <select name="roleId" required>
@@ -91,7 +92,7 @@
                     </form>
                     <span th:unless="${u.role != null}">Aucun rôle</span>
                 </td>
-                <td class="actions">
+                <td>
                     <form th:action="@{/admin/users/{id}/delete(id=${u.idUser})}" method="post" onsubmit="return confirm('Supprimer cet utilisateur ?')">
                         <button type="submit" class="delete">Supprimer</button>
                     </form>

@@ -1,9 +1,78 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Accueil Patient</title></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Patient</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            color: #333;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+    </style>
+</head>
 <body>
-<h1>Bonjour, <span th:text="${username}"></span> (Patient)</h1>
-<p>Vos rendez-vous | Vos dossiers médicaux</p>
-<a href="/logout">Déconnexion</a>
+<div class="container">
+    <div class="header">
+        <h1>👋 Bonjour, <span th:text="${username}">Patient</span></h1>
+        <p>Espace Patient - Hôpital Saint-Vincent</p>
+    </div>
+
+    <div class="card">
+        <h2>📅 Mes Rendez-vous</h2>
+        <p>Gérez vos rendez-vous médicaux</p>
+        <a href="/patient/rendezvous" class="btn">Voir mes RDV</a>
+    </div>
+
+    <div class="card">
+        <h2>📋 Mes Dossiers Médicaux</h2>
+        <p>Consultez votre historique médical</p>
+        <a href="/patient/dossiers" class="btn">Accéder aux dossiers</a>
+    </div>
+
+    <div class="card">
+        <h2>💊 Mes Ordonnances</h2>
+        <p>Visualisez vos traitements en cours</p>
+        <a href="/patient/ordonnances" class="btn">Voir les ordonnances</a>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/logout" class="btn" style="background: #e74c3c;">🚪 Déconnexion</a>
+    </div>
+</div>
 </body>
 </html>

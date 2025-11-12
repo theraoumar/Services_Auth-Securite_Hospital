@@ -1,10 +1,775 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Infirmier - Hôpital</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2980b9;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #17a2b8;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-section h1 {
+            color: var(--dark);
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+
+        .welcome-section .role {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .nurse-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .nurse-details {
+            text-align: right;
+        }
+
+        .service {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+            border-left: 5px solid var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.patients { border-left-color: var(--primary); }
+        .stat-card.medications { border-left-color: var(--info); }
+        .stat-card.observations { border-left-color: var(--warning); }
+        .stat-card.urgent { border-left-color: var(--danger); }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-card.patients .stat-icon { color: var(--primary); }
+        .stat-card.medications .stat-icon { color: var(--info); }
+        .stat-card.observations .stat-icon { color: var(--warning); }
+        .stat-card.urgent .stat-icon { color: var(--danger); }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+            display: block;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .card-header i {
+            font-size: 1.2rem;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-administered { background: #d4edda; color: #155724; }
+        .badge-missed { background: #f8d7da; color: #721c24; }
+        .badge-urgent { background: #f8d7da; color: #721c24; }
+        .badge-normal { background: #d1ecf1; color: #0c5460; }
+
+        /* Priority Indicators */
+        .priority-high { border-left: 4px solid var(--danger); }
+        .priority-medium { border-left: 4px solid var(--warning); }
+        .priority-low { border-left: 4px solid var(--info); }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Task List */
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
+        .task-item:hover {
+            background: #f8f9fa;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-patient {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .task-details {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .task-time {
+            font-weight: bold;
+            color: var(--dark);
+            min-width: 80px;
+            text-align: right;
+            margin-right: 15px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid #eee;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .action-btn i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* Vital Signs */
+        .vital-signs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .vital-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .vital-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .vital-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+
+        /* Alert Banner */
+        .alert-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-banner i {
+            font-size: 1.5rem;
+        }
+    </style>
 </head>
 <body>
-<h2>Bienvenue cher Infirmier</h2>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="welcome-section">
+            <h1>Bonjour, <span th:text="${username}">Infirmier</span> 👨‍⚕️</h1>
+            <div class="role">Espace Infirmier - <span class="service" th:text="${service ?: 'Soins Généraux'}">Cardiologie</span></div>
+        </div>
+        <div class="nurse-info">
+            <div class="nurse-details">
+                <div class="service" th:text="${service ?: 'Infirmier'}"></div>
+                <div style="font-size: 0.9rem; color: #7f8c8d;">Equipe: <span th:text="${equipe ?: 'A'}">A</span> | Poste: <span th:text="${poste ?: 'Soins'}">Soins</span></div>
+            </div>
+            <div class="avatar">
+                <span th:text="${username.substring(0,1).toUpperCase()}">I</span>
+            </div>
+            <a href="/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Déconnexion
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Banner -->
+    <div class="alert-banner">
+        <i class="fas fa-bell"></i>
+        <div>
+            <strong>3 soins urgents</strong> nécessitent votre attention immédiate
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card patients">
+            <i class="fas fa-user-injured stat-icon"></i>
+            <span class="stat-number" th:text="${patientsSoins ?: '12'}">12</span>
+            <div class="stat-label">Patients en Soins</div>
+        </div>
+        <div class="stat-card medications">
+            <i class="fas fa-pills stat-icon"></i>
+            <span class="stat-number" th:text="${medicationsCount ?: '8'}">8</span>
+            <div class="stat-label">Médications à Administrer</div>
+        </div>
+        <div class="stat-card observations">
+            <i class="fas fa-clipboard-list stat-icon"></i>
+            <span class="stat-number" th:text="${observationsCount ?: '5'}">5</span>
+            <div class="stat-label">Observations en Attente</div>
+        </div>
+        <div class="stat-card urgent">
+            <i class="fas fa-exclamation-triangle stat-icon"></i>
+            <span class="stat-number" th:text="${soinsUrgents ?: '3'}">3</span>
+            <div class="stat-label">Soins Urgents</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-grid">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- Tâches de soins du jour -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-tasks"></i> Planification des Soins - Aujourd'hui</h2>
+                    <div style="color: white; font-weight: 600;" th:text="${#temporals.format(#temporals.createToday(), 'EEEE dd MMMM yyyy')}"></div>
+                </div>
+                <div class="card-body">
+                    <div class="task-item priority-high">
+                        <div class="task-time">08:30</div>
+                        <div class="task-info">
+                            <div class="task-patient">Chambre 201 - Robert Durand</div>
+                            <div class="task-details">Pansement complexe - Surveillance glycémie</div>
+                        </div>
+                        <span class="badge badge-urgent">Urgent</span>
+                    </div>
+                    <div class="task-item priority-medium">
+                        <div class="task-time">09:15</div>
+                        <div class="task-info">
+                            <div class="task-patient">Chambre 305 - Marie Lambert</div>
+                            <div class="task-details">Administration antibiotiques IV - Prise constantes</div>
+                        </div>
+                        <span class="badge badge-pending">En attente</span>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-time">10:00</div>
+                        <div class="task-info">
+                            <div class="task-patient">Chambre 412 - Pierre Dubois</div>
+                            <div class="task-details">Soins de bouche - Aide à la toilette</div>
+                        </div>
+                        <span class="badge badge-pending">En attente</span>
+                    </div>
+                    <div class="task-item priority-high">
+                        <div class="task-time">11:30</div>
+                        <div class="task-info">
+                            <div class="task-patient">Urgences - Jean Moreau</div>
+                            <div class="task-details">Pose perfusion - Surveillance ECG</div>
+                        </div>
+                        <span class="badge badge-urgent">Urgent</span>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-time">14:00</div>
+                        <div class="task-info">
+                            <div class="task-patient">Chambre 218 - Sophie Martin</div>
+                            <div class="task-details">Administration insuline - Éducation patient</div>
+                        </div>
+                        <span class="badge badge-pending">En attente</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Médications à administrer -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-pills"></i> Traitements à Administrer</h2>
+                    <span class="badge badge-warning" th:text="${traitementsEnAttente ?: '8'}">8</span>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Médication</th>
+                            <th>Dosage</th>
+                            <th>Heure</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="priority-high">
+                            <td>
+                                <strong>Robert Durand</strong><br>
+                                <small>Chambre 201</small>
+                            </td>
+                            <td>Insuline Glargine</td>
+                            <td>24 UI</td>
+                            <td>08:00</td>
+                            <td><span class="badge badge-urgent">En retard</span></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="administerMedication(this)">
+                                    <i class="fas fa-syringe"></i> Administrer
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="priority-medium">
+                            <td>
+                                <strong>Marie Lambert</strong><br>
+                                <small>Chambre 305</small>
+                            </td>
+                            <td>Amoxicilline IV</td>
+                            <td>1g</td>
+                            <td>09:00</td>
+                            <td><span class="badge badge-pending">Programmé</span></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="administerMedication(this)">
+                                    <i class="fas fa-syringe"></i> Administrer
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Pierre Dubois</strong><br>
+                                <small>Chambre 412</small>
+                            </td>
+                            <td>Paracétamol</td>
+                            <td>1g</td>
+                            <td>10:00</td>
+                            <td><span class="badge badge-pending">Programmé</span></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="administerMedication(this)">
+                                    <i class="fas fa-pills"></i> Administrer
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <!-- Actions rapides -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-bolt"></i> Actions Rapides</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="/infirmier/soins" class="action-btn">
+                            <i class="fas fa-hand-holding-medical"></i>
+                            <span>Nouveau Soin</span>
+                        </a>
+                        <a href="/infirmier/medications" class="action-btn">
+                            <i class="fas fa-pills"></i>
+                            <span>Administration Médication</span>
+                        </a>
+                        <a href="/infirmier/observations" class="action-btn">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span>Saisir Observation</span>
+                        </a>
+                        <a href="/infirmier/patients" class="action-btn">
+                            <i class="fas fa-user-injured"></i>
+                            <span>Liste Patients</span>
+                        </a>
+                        <a href="/infirmier/transmissions" class="action-btn">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>Transmissions</span>
+                        </a>
+                        <a href="/infirmier/stock" class="action-btn">
+                            <i class="fas fa-warehouse"></i>
+                            <span>Gestion Stock</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Surveillance des constantes -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-heartbeat"></i> Surveillance des Constantes</h2>
+                </div>
+                <div class="card-body">
+                    <div style="margin-bottom: 20px;">
+                        <strong>Patient: Robert Durand - Chambre 201</strong>
+                        <div class="vital-signs">
+                            <div class="vital-item">
+                                <div class="vital-value">120/80</div>
+                                <div class="vital-label">Pression Art.</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">78</div>
+                                <div class="vital-label">Pouls</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">36.8°C</div>
+                                <div class="vital-label">Température</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">95%</div>
+                                <div class="vital-label">SpO2</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <strong>Patient: Marie Lambert - Chambre 305</strong>
+                        <div class="vital-signs">
+                            <div class="vital-item">
+                                <div class="vital-value">135/85</div>
+                                <div class="vital-label">Pression Art.</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">92</div>
+                                <div class="vital-label">Pouls</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">38.2°C</div>
+                                <div class="vital-label">Température</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">92%</div>
+                                <div class="vital-label">SpO2</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/infirmier/constantes" class="btn btn-outline" style="margin-top: 15px; width: 100%;">
+                        <i class="fas fa-plus"></i> Saisir de Nouvelles Constantes
+                    </a>
+                </div>
+            </div>
+
+            <!-- Alertes soins -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-bell"></i> Alertes Soins</h2>
+                </div>
+                <div class="card-body">
+                    <div style="margin-bottom: 15px; padding: 12px; background: #f8d7da; border-radius: 8px; border-left: 4px solid #dc3545;">
+                        <strong>Chambre 201 - Hypoglycémie</strong><br>
+                        <small>Robert Durand - Glycémie: 0.65 g/L</small>
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 12px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <strong>Chambre 305 - Fièvre</strong><br>
+                        <small>Marie Lambert - Température: 38.2°C</small>
+                    </div>
+                    <div style="padding: 12px; background: #d1ecf1; border-radius: 8px; border-left: 4px solid #17a2b8;">
+                        <strong>Stock faible</strong><br>
+                        <small>Compresses stériles - Niveau critique</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        const elements = document.querySelectorAll('.stat-card, .card');
+        elements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.1}s`;
+            element.classList.add('fade-in');
+        });
+    });
+
+    // Gestion de l'administration des médicaments
+    function administerMedication(button) {
+        const row = button.closest('tr');
+        const patient = row.querySelector('strong').textContent;
+        const medication = row.cells[1].textContent;
+        const dosage = row.cells[2].textContent;
+
+        if (confirm(`Confirmer l'administration de ${dosage} de ${medication} à ${patient} ?`)) {
+            // Simulation d'administration
+            const statusCell = row.cells[4];
+            statusCell.innerHTML = '<span class="badge badge-administered">Administré</span>';
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-check"></i> Terminé';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-success');
+
+            // Mise à jour des statistiques
+            updateStats();
+        }
+    }
+
+    function updateStats() {
+        // Simulation de mise à jour des stats
+        const medCount = document.querySelector('.stat-card.medications .stat-number');
+        const currentCount = parseInt(medCount.textContent);
+        if (currentCount > 0) {
+            medCount.textContent = currentCount - 1;
+        }
+    }
+
+    // Timer pour les soins en retard
+    function updateOverdueTasks() {
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+
+        document.querySelectorAll('.task-time').forEach(timeCell => {
+            const taskTime = timeCell.textContent;
+            const [hours, minutes] = taskTime.split(':').map(Number);
+            const taskMinutes = hours * 60 + minutes;
+
+            if (taskMinutes < currentTime - 15) { // 15 minutes de retard
+                timeCell.style.color = 'var(--danger)';
+                timeCell.innerHTML = `<i class="fas fa-clock"></i> ${taskTime}`;
+            }
+        });
+    }
+
+    setInterval(updateOverdueTasks, 60000); // Vérifier toutes les minutes
+    updateOverdueTasks();
+</script>
 </body>
 </html>
